@@ -1,0 +1,25 @@
+; Milho Guestbook - API with Database
+
+(import "core/http.milho")
+(import "storage.milho")
+(import "routes.milho")
+
+; Configuration
+(def PORT 8080)
+
+; Initialize
+(init-storage)
+(def server (server-create PORT))
+(setup-routes server)
+
+; Start server
+(println "🍕 Milho Guestbook API")
+(println (str "Listening on port: " PORT))
+(println (str "http://localhost:" PORT))
+(println "")
+(println "Endpoints:")
+(println "  GET  /              - Hello World")
+(println "  GET  /entries       - Get all entries")
+(println "  POST /create_entry  - Create entry (form data: name, message)")
+(println "")
+(server-start server)

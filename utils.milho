@@ -1,0 +1,22 @@
+; Utility functions for guestbook
+
+; Extract value from URL-encoded form data
+(defn get-form-value (form-data key)
+  (do
+    (def search-key (str key "="))
+    (if (contains form-data search-key)
+      (do
+        (def start-idx (+ (index-of form-data search-key) (+ (index-of search-key "=") 1)))
+        (def remaining (substring form-data start-idx))
+        (def end-idx (index-of remaining "&"))
+        (def value (if (< end-idx 0)
+          remaining
+          (substring remaining 0 end-idx)))
+        (def decoded (replace value "%20" " "))
+        (def decoded2 (replace decoded "%21" "!"))
+        (def decoded3 (replace decoded2 "%3F" "?"))
+        (def decoded4 (replace decoded3 "%2C" ","))
+        (def decoded5 (replace decoded4 "%2B" "+"))
+        (def decoded6 (replace decoded5 "%3D" "="))
+        decoded6)
+      "")))

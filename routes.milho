@@ -1,0 +1,26 @@
+; Route handlers for guestbook API
+
+(import "core/http.milho")
+(import "storage.milho")
+(import "utils.milho")
+
+; Setup all routes for the server
+(defn setup-routes (server)
+  (do
+    ; GET / - Hello World
+    (route-get server "/"
+      (fn (req res)
+        (response-text res "Hello, World! Guestbook API is running.")))
+
+    ; GET /entries - Return all guestbook entries
+    (route-get server "/entries"
+      (fn (req res)
+        (response-text res (get-all-entries))))
+
+    ; POST /create_entry - Create a new guestbook entry
+    (route-post server "/create_entry"
+      (fn (req res)
+        (response-text res
+          (create-and-save-entry
+            (get-form-value (request-body req) "name")
+            (get-form-value (request-body req) "message")))))))

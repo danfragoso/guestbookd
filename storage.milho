@@ -1,0 +1,39 @@
+; Storage operations for guestbook using pizzakv
+
+(import "core/pizzakv.milho")
+
+; Initialize database connection
+(defn init-storage ()
+  (kv-connect))
+
+; Create and save a guestbook entry
+(defn create-and-save-entry (name message)
+  (do
+    (def id (str "entry_" (random-string 8)))
+    (def ts (timestamp))
+    (def entry (str name "|" ts "|" message))
+    (kv-write id entry)
+    (def curr (kv-read "guestbook_entries"))
+    (kv-write "guestbook_entries"
+      (if (= curr Nil)
+        id
+        (str curr "|" id)))
+    (println (str "✅ New entry: " id " | " name " | " message))
+    (str id "|" entry)))
+
+; Get all entries as text
+(defn get-all-entries ()
+  (do
+    (def ids-str (kv-read "guestbook_entries"))
+    (if (= ids-str Nil)
+      ""
+      (do
+        (def ids (split ids-str "|"))
+        (def entries-list (map ids
+          (fn (id)
+            (do
+              (def data (kv-read id))
+              (if (= data Nil)
+                ""
+                (str id "|" data))))))
+        (join entries-list "\n")))))
