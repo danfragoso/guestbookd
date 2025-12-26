@@ -37,3 +37,35 @@
                 ""
                 (str id "|" data))))))
         (join entries-list "\n")))))
+
+; Create and save a visit capture
+(defn create-and-save-capture (page referrer user-agent language platform screen-width screen-height timezone-offset)
+  (do
+    (def id (str "capture_" (random-string 8)))
+    (def ts (timestamp))
+    (def capture (str page "|" ts "|" referrer "|" user-agent "|" language "|" platform "|" screen-width "|" screen-height "|" timezone-offset))
+    (kv-write id capture)
+    (def curr (kv-read "visit_captures"))
+    (kv-write "visit_captures"
+      (if (= curr Nil)
+        id
+        (str curr "|" id)))
+    (println (str "📊 New capture: " id " | " page " | " language " | " platform))
+    (str id "|" capture)))
+
+; Get all captures as text
+(defn get-all-captures ()
+  (do
+    (def ids-str (kv-read "visit_captures"))
+    (if (= ids-str Nil)
+      ""
+      (do
+        (def ids (split ids-str "|"))
+        (def captures-list (map ids
+          (fn (id)
+            (do
+              (def data (kv-read id))
+              (if (= data Nil)
+                ""
+                (str id "|" data))))))
+        (join captures-list "\n")))))

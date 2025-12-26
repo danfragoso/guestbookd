@@ -23,4 +23,28 @@
         (response-text res
           (create-and-save-entry
             (get-form-value (request-body req) "name")
-            (get-form-value (request-body req) "message")))))))
+            (get-form-value (request-body req) "message")))))
+
+    ; POST /capture - Capture visit metrics
+    (route-post server "/capture"
+      (fn (req res)
+        (response-text res
+          (create-and-save-capture
+            (get-form-value (request-body req) "page")
+            (get-form-value (request-body req) "referrer")
+            (get-form-value (request-body req) "user_agent")
+            (get-form-value (request-body req) "language")
+            (get-form-value (request-body req) "platform")
+            (get-form-value (request-body req) "screen_width")
+            (get-form-value (request-body req) "screen_height")
+            (get-form-value (request-body req) "timezone_offset")))))
+
+    ; GET /captures - Return all visit captures
+    (route-get server "/captures"
+      (fn (req res)
+        (response-text res (get-all-captures))))
+
+    ; GET /dash - Dashboard frontend
+    (route-get server "/dash"
+      (fn (req res)
+        (response-html res (read "dash/index.html"))))))

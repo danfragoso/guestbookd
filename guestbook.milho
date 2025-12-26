@@ -21,5 +21,8 @@
 (println "  GET  /              - Hello World")
 (println "  GET  /entries       - Get all entries")
 (println "  POST /create_entry  - Create entry (form data: name, message)")
+(println "  POST /capture       - Capture visit (form data: page, referrer, user_agent, language, platform, screen_width, screen_height, timezone_offset)")
+(println "  GET  /captures      - Get all visit captures")
+(println "  GET  /dash          - Visit dashboard (HTML)")
 (println "")
 (server-start server)
